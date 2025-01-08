@@ -28,7 +28,7 @@ const fetchProperties = async () => {
 };
 
 const AllListings = () => {
-  const [priceRange, setPriceRange] = useState<[number, number]>([500, 2000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [location] = useState("");
