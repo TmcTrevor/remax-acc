@@ -17,8 +17,10 @@ const LatestBelizeVideos = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center pt-[80px] md:py-[200px] w-full">
-        <h1 className="text-8xl font-bold">Latest Belize Videos</h1>
+      <div className="flex flex-col items-center justify-center pt-[80px] md:pt-[200px] w-full">
+        <h1 className="text-2xl md:text-4xl px-12 mb-12 lg:px-0lg:text-6xl font-bold">
+          Latest Belize Videos
+        </h1>
       </div>
       <section
         className="relative w-full h-[600px] overflow-hidden"

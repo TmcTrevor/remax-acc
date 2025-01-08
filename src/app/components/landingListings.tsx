@@ -62,7 +62,9 @@ const HotelListing = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center pt-[80px] md:pt-[200px] pb-[40px] md:pb-[80px] w-full">
-        <h1 className="text-8xl font-bold">Belize MLS Listings</h1>
+        <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold">
+          Belize MLS Listings
+        </h1>
         <img
           decoding="async"
           width="215"
@@ -75,7 +77,7 @@ const HotelListing = () => {
         />
       </div>
 
-      <div className="hotel-listing grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="hotel-listing grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {listings.map((listing) => (
           <Card
             key={listing.ListingId}

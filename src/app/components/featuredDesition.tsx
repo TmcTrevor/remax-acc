@@ -22,8 +22,10 @@ const FeaturedDestination = () => {
     <div className="flex flex-col items-center justify-center">
       {/* Title Section */}
       <div className="flex flex-col items-center justify-center pt-[80px] md:pt-[200px] pb-[40px] md:pb-[80px] w-full">
-        <h1 className="text-3xl text-mainColor font-bold">Explore The World</h1>
-        <h1 className="text-8xl text-secondaryColor font-bold">
+        <h1 className="text-2xl md:text-4xl lg:text-6xl text-mainColor font-bold">
+          Explore The World
+        </h1>
+        <h1 className="text-3xl md:text-6xl lg:text-8xl text-secondaryColor font-bold">
           Featured Destination
         </h1>
         <Image

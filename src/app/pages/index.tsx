@@ -7,19 +7,21 @@ import LatestVideo from "@/app/components/LatestVideo";
 export default function LandingPage() {
   return (
     <>
-      <div
-        style={{
-          backgroundImage: `url(${bgImage.src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}>
-        {/* <Navbar /> */}
-        <Hero />
+      <div className="flex flex-col  mx-auto">
+        <div
+          style={{
+            backgroundImage: `url(${bgImage.src})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}>
+          {/* <Navbar /> */}
+          <Hero />
+        </div>
+        <LandingListings />
+        <FeaturedDesition />
+        <LatestVideo />
+        {/* <Footer /> */}
       </div>
-      <LandingListings />
-      <FeaturedDesition />
-      <LatestVideo />
-      {/* <Footer /> */}
     </>
   );
 }
