@@ -44,7 +44,7 @@ const AllListingHeader = () => {
 
   return (
     <section
-      className="relative w-full h-[500px] bg-cover bg-center"
+      className="relative w-full h-[300px] lg:h-[500px] bg-cover bg-center"
       style={{
         backgroundImage: `url(${bg.src})`,
       }}>
@@ -60,8 +60,10 @@ const AllListingHeader = () => {
       </div>
 
       {/* Search Bar Section */}
-      <div className="absolute bottom-[-60px] left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl">
-        <div className="flex flex-col px-48 lg:px-0 lg:flex-row items-center justify-center w-full bg-white shadow-lg rounded-r-lg">
+      <div
+        style={{ zoom: window?.innerWidth < 1024 ? "0.55" : "1" }}
+        className="absolute mt-[-130px] mb-0 lg:bottom-[-60px] left-1/2 transform -translate-x-1/2 z-20 w-full max-w-lg lg:max-w-5xl ">
+        <div className="flex flex-col lg:px-0 lg:flex-row items-center justify-center w-full bg-white shadow-lg rounded-r-lg">
           {/* Search Inputs */}
           <div className="flex flex-col  lg:flex-row items-center w-full p-4 gap-4 lg:gap-0">
             {/* Location Select */}
