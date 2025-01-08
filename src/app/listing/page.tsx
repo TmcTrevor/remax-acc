@@ -1,11 +1,11 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import AllListingHeader from "../components/AllListingHeader";
 import AllListings from "../components/AllListings";
 
-export default function Listing() {
-  const router = useRouter();
+function ListingContent() {
   const searchParams = useSearchParams(); // Get query parameters
 
   const [location, setLocation] = useState("");
@@ -29,31 +29,39 @@ export default function Listing() {
   }, [searchParams]);
 
   return (
-    <div className=" mx-auto  w-full">
-      <AllListingHeader />
-      <div className=" mx-auto p-48">
-        <AllListings />
-        <h1 className="text-4xl font-bold mb-6">Listings</h1>
-        <p>Location: {location}</p>
-        <p>Property Type: {propertyType}</p>
-        <p>Price Range: {priceRange}</p>
+    <div className=" mx-auto p-48">
+      <AllListings />
+      <h1 className="text-4xl font-bold mb-6">Listings</h1>
+      <p>Location: {location}</p>
+      <p>Property Type: {propertyType}</p>
+      <p>Price Range: {priceRange}</p>
 
-        <div className="mt-6">
-          {location || propertyType || priceRange ? (
-            <div className="p-4 border border-gray-300 rounded-lg mb-4">
-              <h2 className="text-2xl font-semibold">Filtered Listings</h2>
-              <p>Showing results for:</p>
-              <ul className="list-disc ml-6">
-                {location && <li>Location: {location}</li>}
-                {propertyType && <li>Property Type: {propertyType}</li>}
-                {priceRange && <li>Price Range: {priceRange}</li>}
-              </ul>
-            </div>
-          ) : (
-            <p>No filters applied. Showing all listings.</p>
-          )}
-        </div>
+      <div className="mt-6">
+        {location || propertyType || priceRange ? (
+          <div className="p-4 border border-gray-300 rounded-lg mb-4">
+            <h2 className="text-2xl font-semibold">Filtered Listings</h2>
+            <p>Showing results for:</p>
+            <ul className="list-disc ml-6">
+              {location && <li>Location: {location}</li>}
+              {propertyType && <li>Property Type: {propertyType}</li>}
+              {priceRange && <li>Price Range: {priceRange}</li>}
+            </ul>
+          </div>
+        ) : (
+          <p>No filters applied. Showing all listings.</p>
+        )}
       </div>
+    </div>
+  );
+}
+
+export default function Listing() {
+  return (
+    <div className="mx-auto w-full">
+      <AllListingHeader />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ListingContent />
+      </Suspense>
     </div>
   );
 }

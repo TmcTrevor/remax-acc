@@ -7,7 +7,6 @@ import axios from "axios";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Listing } from "../types/properties";
 import PropertyCarousel from "./imagesCarousell";
 // Mock data for filters
@@ -32,8 +31,8 @@ const AllListings = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([500, 2000]);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [location, setLocation] = useState("");
-  const [propertyType, setPropertyType] = useState("");
+  const [location] = useState("");
+  const [propertyType] = useState("");
   const searchParams = useSearchParams();
 
   const {
@@ -63,8 +62,8 @@ const AllListings = () => {
   const filteredListings = listings?.filter((listing) => {
     const price = listing.ListPrice;
     const matchesPriceRange = price >= priceRange[0] && price <= priceRange[1];
-    const matchesLocation = listing.Location === location;
-    const matchesPropertyType = listing.PropertyTypeName_en === propertyType;
+    // const matchesLocation = listing.Location === location;
+    // const matchesPropertyType = listing.PropertyTypeName_en === propertyType;
 
     // const matchesFacilities = selectedFacilities.every((facility) =>
     //   listing.Facilities?.includes(facility)
@@ -82,8 +81,8 @@ const AllListings = () => {
   });
 
   useEffect(() => {
-    const locationParam = searchParams.get("location") || "";
-    const propertyTypeParam = searchParams.get("propertyType") || "";
+    // const locationParam = searchParams.get("location") || "";
+    // const propertyTypeParam = searchParams.get("propertyType") || "";
     // Sync initial filters with URL query params
     const initialPriceRange = searchParams.get("priceRange");
     if (initialPriceRange) {
