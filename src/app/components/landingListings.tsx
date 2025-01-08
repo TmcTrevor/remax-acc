@@ -105,8 +105,9 @@ const HotelListing = () => {
                 <span className="text-gray-500">- 105 Reviews</span>
               </div>
               <div className="text-gray-800 font-medium mt-2">
-                Starting from{" "}
-                <span className="text-red-600">${listing.ListPrice}</span>
+                <span className="text-red-600 font-bold">
+                  ${listing.ListPrice}
+                </span>
               </div>
             </CardContent>
           </Card>

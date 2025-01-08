@@ -15,7 +15,7 @@ const PropertyCarousel = ({ images }: { images: string[] }) => {
   };
 
   return (
-    <div className="relative w-full h-[200px] overflow-hidden rounded-t-lg">
+    <div className="relative w-full h-[340px] overflow-hidden rounded-t-lg">
       {/* Image */}
       <Image
         src={images[currentIndex]}

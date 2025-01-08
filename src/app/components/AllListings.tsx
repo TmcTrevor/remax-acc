@@ -9,6 +9,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Listing } from "../types/properties";
 import PropertyCarousel from "./imagesCarousell";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 // Mock data for filters
 const facilitiesOptions = [
   "Garage",
@@ -206,24 +213,29 @@ const AllListings = () => {
       <div className="flex flex-col w-full lg:w-3/4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentListings?.map((listing) => (
-            <div
+            <Card
               key={listing.ListingId}
-              className="border p-4 w-full rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <PropertyCarousel images={listing.Images.split("|")} />
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold text-mainColor">
+              className="w-full md:w-[362px] min-h-[580px] flex flex-col justify-between items-start shadow-lg">
+              <CardHeader className="p-0 h-full w-full">
+                <PropertyCarousel images={listing.Images.split("|")} />
+              </CardHeader>
+              <CardContent className="p-4">
+                <CardTitle className="text-xl font-semibold">
                   {listing.ListingTitle_en}
-                </h3>
-                <p className="text-gray-500 text-sm">{listing.Location}</p>
-                <div className="flex items-center gap-2 mt-2">
+                </CardTitle>
+                <CardDescription className="text-gray-500 text-sm">
+                  {listing.Location}
+                </CardDescription>
+                <div className="flex items-center gap-2">
                   <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="text-gray-500">- Reviews</span>
+                  <span className="text-gray-500">- 105 Reviews</span>
                 </div>
-                <div className="mt-2 text-lg font-semibold text-red-600">
-                  Starting from ${listing.ListPrice}
+                <div className="text-gray-800 font-medium mt-2">
+                  Starting from{" "}
+                  <span className="text-red-600">${listing.ListPrice}</span>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
