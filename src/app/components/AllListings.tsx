@@ -33,6 +33,8 @@ const AllListings = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [location] = useState("");
   const [propertyType] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const listingsPerPage = 12; // Number of listings per page
   const searchParams = useSearchParams();
 
   const {
@@ -80,6 +82,18 @@ const AllListings = () => {
     return matchesPriceRange;
   });
 
+  // Calculate the listings to display based on the current page
+  const indexOfLastListing = currentPage * listingsPerPage;
+  const indexOfFirstListing = indexOfLastListing - listingsPerPage;
+  const currentListings = filteredListings?.slice(
+    indexOfFirstListing,
+    indexOfLastListing
+  );
+
+  const totalPages = Math.ceil(
+    (filteredListings?.length || 0) / listingsPerPage
+  );
+
   useEffect(() => {
     // const locationParam = searchParams.get("location") || "";
     // const propertyTypeParam = searchParams.get("propertyType") || "";
@@ -101,7 +115,27 @@ const AllListings = () => {
     }
   }, [searchParams]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col lg:flex-row gap-8 px-8 py-12">
+        <div className="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, index) => (
+            <div
+              key={index}
+              className="border p-4 w-full rounded-lg shadow-md hover:shadow-lg transition-shadow animate-pulse">
+              <div className="bg-gray-300 h-48 rounded-t-lg"></div>
+              <div className="mt-4 space-y-2">
+                <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
+                <div className="bg-gray-300 h-4 w-1/2 rounded"></div>
+                <div className="bg-gray-300 h-4 w-1/4 rounded mt-2"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (isError) return <div>Error loading listings.</div>;
 
   return (
@@ -169,36 +203,49 @@ const AllListings = () => {
       </div>
 
       {/* Property Listings */}
-      <div className="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredListings?.map((listing) => (
-          <div
-            key={listing.ListingId}
-            className="border p-4 w-full rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            {/* <div className="relative w-full h-[200px]">
-              <Image
-                src={listing.Images.split("|")[0]}
-                alt={listing.ListingTitle_en}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-t-lg"
-              />
-            </div> */}
-            <PropertyCarousel images={listing.Images.split("|")} />
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold text-mainColor">
-                {listing.ListingTitle_en}
-              </h3>
-              <p className="text-gray-500 text-sm">{listing.Location}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                <span className="text-gray-500">- Reviews</span>
-              </div>
-              <div className="mt-2 text-lg font-semibold text-red-600">
-                Starting from ${listing.ListPrice}
+      <div className="flex flex-col w-full lg:w-3/4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentListings?.map((listing) => (
+            <div
+              key={listing.ListingId}
+              className="border p-4 w-full rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <PropertyCarousel images={listing.Images.split("|")} />
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold text-mainColor">
+                  {listing.ListingTitle_en}
+                </h3>
+                <p className="text-gray-500 text-sm">{listing.Location}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                  <span className="text-gray-500">- Reviews</span>
+                </div>
+                <div className="mt-2 text-lg font-semibold text-red-600">
+                  Starting from ${listing.ListPrice}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <div className="flex justify-center items-center mt-8 mb-4">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="mr-2">
+            Previous
+          </Button>
+          <span className="text-sm mx-4">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="ml-2">
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

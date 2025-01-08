@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import bg from "@/i/Images/Remax-Belize-MLS-Hero-Image.jpg";
 
 const AllListingHeader = () => {
+  // const searchParams = useSearchParams();
   const [location, setLocation] = useState(
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search).get("location") || ""
