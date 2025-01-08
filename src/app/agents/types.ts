@@ -1,0 +1,21 @@
+export type Agent = {
+  AssociateID: number;
+  FirstName: string;
+  LastName: string;
+  REMAXID: string;
+  Mobile: string;
+  DirectPhone: string;
+  RemaxEmail: string;
+  NonRemaxEmail: string | null;
+  Birthday: string;
+  StartDate: string;
+  AssociateStatus_en: string;
+  UrlImg: string;
+  Title: string;
+  Gender: string;
+  Lang: string;
+  OfficeID: number;
+  CountryID: number;
+  OfficeName: string;
+  TitleEs: string;
+};
