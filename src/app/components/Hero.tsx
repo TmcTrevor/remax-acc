@@ -44,10 +44,9 @@ export default function Hero() {
         <div className="flex justify-center items-center w-full max-w-6xl">
           <div className="bg-white rounded-l-lg shadow-lg max-w-6xl w-3/4">
             <div className="flex flex-col w-full justify-between p-4 items-center lg:flex-row gap-4">
-              {/* Location Input */}
+              {/* Location Select */}
               <div className="relative min-h-[120px] w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center border-r border-gray-300 items-start group">
                 <label
-                  htmlFor="location"
                   className={`absolute text-3xl font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
                     ${
                       location
@@ -56,13 +55,61 @@ export default function Hero() {
                     } group-focus-within:top-0 group-focus-within:translate-y-0 group-focus-within:scale-75 group-focus-within:text-blue-500 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100`}>
                   Location
                 </label>
-                <input
-                  id="location"
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-4 py-2 border-0 focus:border-transparent bg-transparent focus:outline-none focus:ring-0 text-gray-900 transition-all duration-300 ease-in-out peer"
-                />
+                <Select onValueChange={(value) => setLocation(value)}>
+                  <SelectTrigger className="relative text-gray-900 w-full !border-none !focus:border-none bg-transparent focus:ring-0 flex justify-between items-center">
+                    <SelectValue
+                      placeholder=""
+                      className="text-gray-900 peer text-lg mt-2"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="z-50 mt-2 border border-gray-200 rounded-lg shadow-lg bg-white text-gray-900 text-sm">
+                    <SelectItem
+                      value="Ambergris Caye"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Ambergris Caye
+                    </SelectItem>
+                    <SelectItem
+                      value="Belize City"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Belize City
+                    </SelectItem>
+                    <SelectItem
+                      value="Belmopan"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Belmopan
+                    </SelectItem>
+                    <SelectItem
+                      value="Caye Caulker"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Caye Caulker
+                    </SelectItem>
+                    <SelectItem
+                      value="Corozal"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Corozal
+                    </SelectItem>
+                    <SelectItem
+                      value="Hopkins"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Hopkins
+                    </SelectItem>
+                    <SelectItem
+                      value="Placencia"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Placencia
+                    </SelectItem>
+                    <SelectItem
+                      value="San Ignacio"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      San Ignacio
+                    </SelectItem>
+                    <SelectItem
+                      value="San Pedro"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      San Pedro
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               {/* Property Type Select */}
               <div className="relative min-h-[120px] w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center border-r border-gray-300 items-start group">
@@ -84,17 +131,22 @@ export default function Hero() {
                   </SelectTrigger>
                   <SelectContent className="z-50 mt-2 border border-gray-200 rounded-lg shadow-lg bg-white text-gray-900 text-sm">
                     <SelectItem
-                      value="house"
+                      value="Homes"
                       className="px-4 py-2 hover:bg-gray-100 transition-colors">
-                      House
+                      Homes
                     </SelectItem>
                     <SelectItem
-                      value="apartment"
+                      value="Condos"
                       className="px-4 py-2 hover:bg-gray-100 transition-colors">
-                      Apartment
+                      Condos
                     </SelectItem>
                     <SelectItem
-                      value="land"
+                      value="Commercial"
+                      className="px-4 py-2 hover:bg-gray-100 transition-colors">
+                      Commercial
+                    </SelectItem>
+                    <SelectItem
+                      value="Land"
                       className="px-4 py-2 hover:bg-gray-100 transition-colors">
                       Land
                     </SelectItem>
