@@ -22,7 +22,7 @@ const PropertyCarousel = ({ images }: { images: string[] }) => {
         alt={`Property Image ${currentIndex + 1}`}
         layout="fill"
         objectFit="cover"
-        className="rounded-t-lg"
+        className="rounded-t-lg shadow-2xl"
       />
 
       {/* Navigation Controls */}

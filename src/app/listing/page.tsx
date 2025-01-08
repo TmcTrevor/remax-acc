@@ -7,7 +7,7 @@ import AllListings from "../components/AllListings";
 
 function ListingContent() {
   return (
-    <div className=" pt-[300px] mb-0 lg:mt-0 mx-auto p-4 md:p-8 lg:p-12 xl:p-48">
+    <div className="pt-[300px] mb-0 lg:mt-0 mx-auto p-4 md:p-8 lg:p-12 xl:p-48">
       <AllListings />
     </div>
   );

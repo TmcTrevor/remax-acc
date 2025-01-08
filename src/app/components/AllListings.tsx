@@ -117,7 +117,7 @@ const AllListings = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col lg:flex-row gap-8 px-8 py-12">
+      <div className="flex flex-col lg:flex-row gap-8 px-2 lg:px-8 py-12">
         <div className="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, index) => (
             <div
@@ -139,7 +139,7 @@ const AllListings = () => {
   if (isError) return <div>Error loading listings.</div>;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 px-8 py-12">
+    <div className="flex flex-col lg:flex-row gap-8 px-2 lg:px-8 py-12">
       {/* Sidebar - Filters */}
       <div className="w-full lg:w-1/4 space-y-8">
         {/* Price Range Filter */}

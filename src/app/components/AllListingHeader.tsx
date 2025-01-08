@@ -13,6 +13,7 @@ import bg from "@/i/Images/Remax-Belize-MLS-Hero-Image.jpg";
 
 const AllListingHeader = () => {
   // const searchParams = useSearchParams();
+
   const [location, setLocation] = useState(
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search).get("location") || ""
@@ -61,8 +62,8 @@ const AllListingHeader = () => {
 
       {/* Search Bar Section */}
       <div
-        style={{ zoom: window?.innerWidth < 1024 ? "0.55" : "1" }}
-        className="absolute mt-[-130px] mb-0 lg:bottom-[-60px] left-1/2 transform -translate-x-1/2 z-20 w-full max-w-lg lg:max-w-5xl ">
+        className="absolute mt-[-180px] mb-0 lg:bottom-[-60px] left-1/2 transform -translate-x-1/2 z-20 w-full  lg:max-w-5xl 
+  lg:scale-100 scale-[0.65]">
         <div className="flex flex-col lg:px-0 lg:flex-row items-center justify-center w-full bg-white shadow-lg rounded-r-lg">
           {/* Search Inputs */}
           <div className="flex flex-col  lg:flex-row items-center w-full p-4 gap-4 lg:gap-0">
