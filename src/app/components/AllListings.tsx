@@ -146,9 +146,9 @@ const AllListings = () => {
   if (isError) return <div>Error loading listings.</div>;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 px-2 lg:px-8 py-12">
+    <div className="flex flex-col lg:flex-row gap-8 px-4 lg:px-8 2xl:px-24 py-12">
       {/* Sidebar - Filters */}
-      <div className="w-full lg:w-1/4 space-y-8">
+      <div className="w-full lg:w-1/6 2xl:w-1/4 space-y-8">
         {/* Price Range Filter */}
         <div className="p-6 border rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Price Range</h2>
@@ -210,8 +210,8 @@ const AllListings = () => {
       </div>
 
       {/* Property Listings */}
-      <div className="flex flex-col w-full lg:w-3/4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-col w-full lg:w-5/6 2xl:w-3/4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {currentListings?.map((listing) => (
             <Card
               key={listing.ListingId}

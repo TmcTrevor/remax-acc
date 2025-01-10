@@ -10,13 +10,14 @@ import Link from "next/link";
 import { useState } from "react";
 import logo from "@/i/Images/remaxbelizelogo.webp";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const pathname = usePathname();
   return (
-    <header className="bg-white h-[120px] flex w-full items-center justify-center">
-      <div className="container mx-auto flex px-4  lg:px-48 items-center justify-between py-4">
+    <header className="bg-white sticky top-0 z-[1000] h-[120px] flex w-full items-center justify-center">
+      <div className="container mx-auto flex px-4 w-full  lg:px-48 items-center justify-between py-4">
         {/* Logo */}
         <Link href="/">
           <Image
@@ -39,7 +40,7 @@ export default function Navbar() {
 
         {/* Fullscreen Navigation Menu */}
         <div
-          className={`fixed  inset-0 h-[250px] bg-white z-50 flex flex-col items-center justify-start transform transition-transform duration-300 ${
+          className={`fixed md:hidden  inset-0 h-[250px] bg-white z-50 flex flex-col items-center justify-start transform transition-transform duration-300 ${
             isOpen
               ? "translate-y-0  mt-[120px] py-8"
               : "-translate-y-full md:hidden"
@@ -49,7 +50,9 @@ export default function Navbar() {
               <NavigationMenuItem>
                 <Link href="/" passHref>
                   <p
-                    className="text-gray-600 hover:text-gray-800"
+                    className={`${
+                      pathname === "/" ? "text-mainColor" : "text-gray-600"
+                    } hover:text-mainColor`}
                     onClick={() => setIsOpen(false)}>
                     Home
                   </p>
@@ -59,7 +62,11 @@ export default function Navbar() {
               <NavigationMenuItem>
                 <Link href="/listing" passHref>
                   <p
-                    className="text-gray-600 hover:text-gray-800"
+                    className={`${
+                      pathname === "/listing"
+                        ? "text-mainColor"
+                        : "text-gray-600"
+                    } hover:text-mainColor`}
                     onClick={() => setIsOpen(false)}>
                     Listings
                   </p>
@@ -69,7 +76,11 @@ export default function Navbar() {
               <NavigationMenuItem>
                 <Link href="/agents" passHref>
                   <p
-                    className="text-gray-600 hover:text-gray-800"
+                    className={`${
+                      pathname === "/agents"
+                        ? "text-mainColor"
+                        : "text-gray-600"
+                    } hover:text-mainColor`}
                     onClick={() => setIsOpen(false)}>
                     Agents
                   </p>
@@ -79,7 +90,11 @@ export default function Navbar() {
               <NavigationMenuItem>
                 <Link href="/locations" passHref>
                   <p
-                    className="text-gray-600 hover:text-gray-800"
+                    className={`${
+                      pathname === "/locations"
+                        ? "text-mainColor"
+                        : "text-gray-600"
+                    } hover:text-mainColor`}
                     onClick={() => setIsOpen(false)}>
                     Locations
                   </p>
@@ -103,7 +118,9 @@ export default function Navbar() {
             <NavigationMenuItem>
               <Link href="/" passHref>
                 <p
-                  className="text-gray-600 hover:text-gray-800"
+                  className={`${
+                    pathname === "/" ? "text-mainColor" : "text-gray-600"
+                  } hover:text-mainColor`}
                   onClick={() => setIsOpen(false)}>
                   Home
                 </p>
@@ -113,7 +130,9 @@ export default function Navbar() {
             <NavigationMenuItem>
               <Link href="/listing" passHref>
                 <p
-                  className="text-gray-600 hover:text-gray-800"
+                  className={`${
+                    pathname === "/listing" ? "text-mainColor" : "text-gray-600"
+                  } hover:text-mainColor`}
                   onClick={() => setIsOpen(false)}>
                   Listings
                 </p>
@@ -123,7 +142,9 @@ export default function Navbar() {
             <NavigationMenuItem>
               <Link href="/agents" passHref>
                 <p
-                  className="text-gray-600 hover:text-gray-800"
+                  className={`${
+                    pathname === "/agents" ? "text-mainColor" : "text-gray-600"
+                  } hover:text-mainColor`}
                   onClick={() => setIsOpen(false)}>
                   Agents
                 </p>
@@ -133,7 +154,11 @@ export default function Navbar() {
             <NavigationMenuItem>
               <Link href="/locations" passHref>
                 <p
-                  className="text-gray-600 hover:text-gray-800"
+                  className={`${
+                    pathname === "/locations"
+                      ? "text-mainColor"
+                      : "text-gray-600"
+                  } hover:text-mainColor`}
                   onClick={() => setIsOpen(false)}>
                   Locations
                 </p>

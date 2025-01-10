@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import remaxLogo from "@/i/Images/remaxbelizelogo.webp";
 import { FaFacebookF, FaYoutube, FaTwitter } from "react-icons/fa"; // Import social icons
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -40,29 +41,37 @@ const Footer = () => {
           <h3 className="text-xl font-bold text-gray-800">Quick Links</h3>
           <ul className="mt-4 space-y-2">
             <li>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <Link href="/" className="text-gray-600 hover:text-mainColor">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <Link
+                href="/listing"
+                className="text-gray-600 hover:text-mainColor">
                 Listings
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <Link
+                href="/agents"
+                className="text-gray-600 hover:text-mainColor">
                 Agents
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <Link
+                href="/locations"
+                className="text-gray-600 hover:text-mainColor">
                 Locations
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <Link
+                href="/contact"
+                className="text-gray-600 hover:text-mainColor">
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
