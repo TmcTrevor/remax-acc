@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// Mock data for filters
+
 const facilitiesOptions = [
   "Garage",
   "Parking",
@@ -38,11 +38,13 @@ const AllListings = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [location] = useState("");
-  const [propertyType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const listingsPerPage = 12; // Number of listings per page
   const searchParams = useSearchParams();
+
+  // Extract location and propertyType from URL query parameters
+  const location = searchParams.get("location") || "";
+  const propertyType = searchParams.get("propertyType") || "";
 
   const {
     data: listings,
@@ -71,22 +73,18 @@ const AllListings = () => {
   const filteredListings = listings?.filter((listing) => {
     const price = listing.ListPrice;
     const matchesPriceRange = price >= priceRange[0] && price <= priceRange[1];
-    // const matchesLocation = listing.Location === location;
-    // const matchesPropertyType = listing.PropertyTypeName_en === propertyType;
 
-    // const matchesFacilities = selectedFacilities.every((facility) =>
-    //   listing.Facilities?.includes(facility)
-    // );
+    const matchesLocation = location
+      ? listing.Location.toLowerCase().includes(location.toLowerCase())
+      : true;
 
-    // const matchesTags = selectedTags.every((tag) =>
-    //   listing.Tags?.includes(tag)
-    // );
-    console.log(listing.Location);
-    console.log(location);
-    console.log(listing.PropertyTypeName_en);
-    console.log(propertyType);
-    // return matchesPriceRange && matchesLocation && matchesPropertyType;
-    return matchesPriceRange;
+    const matchesPropertyType = propertyType
+      ? listing.PropertyTypeName_en.toLowerCase().includes(
+          propertyType.toLowerCase()
+        )
+      : true;
+
+    return matchesPriceRange && matchesLocation && matchesPropertyType;
   });
 
   // Calculate the listings to display based on the current page
@@ -102,9 +100,6 @@ const AllListings = () => {
   );
 
   useEffect(() => {
-    // const locationParam = searchParams.get("location") || "";
-    // const propertyTypeParam = searchParams.get("propertyType") || "";
-    // Sync initial filters with URL query params
     const initialPriceRange = searchParams.get("priceRange");
     if (initialPriceRange) {
       const [min, max] = initialPriceRange.split("-").map(Number);
@@ -211,53 +206,59 @@ const AllListings = () => {
 
       {/* Property Listings */}
       <div className="flex flex-col w-full lg:w-5/6 2xl:w-3/4">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {currentListings?.map((listing) => (
-            <Card
-              key={listing.ListingId}
-              className="w-full md:w-[362px] min-h-[580px] flex flex-col justify-between items-start shadow-lg">
-              <CardHeader className="p-0 h-full w-full">
-                <PropertyCarousel images={listing.Images.split("|")} />
-              </CardHeader>
-              <CardContent className="p-4">
-                <CardTitle className="text-xl font-semibold">
-                  {listing.ListingTitle_en}
-                </CardTitle>
-                <CardDescription className="text-gray-500 text-sm">
-                  {listing.Location}
-                </CardDescription>
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span className="text-gray-500">- 105 Reviews</span>
-                </div>
-                <div className="text-gray-800 font-medium mt-2">
-                  Starting from{" "}
-                  <span className="text-red-600">${listing.ListPrice}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {currentListings?.length === 0 ? (
+          <div className="text-center text-gray-500">No properties found.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {currentListings?.map((listing) => (
+              <Card
+                key={listing.ListingId}
+                className="w-full md:w-[362px] min-h-[580px] flex flex-col justify-between items-start shadow-lg">
+                <CardHeader className="p-0 h-full w-full">
+                  <PropertyCarousel images={listing.Images.split("|")} />
+                </CardHeader>
+                <CardContent className="p-4">
+                  <CardTitle className="text-xl font-semibold">
+                    {listing.ListingTitle_en}
+                  </CardTitle>
+                  <CardDescription className="text-gray-500 text-sm">
+                    {listing.Location}
+                  </CardDescription>
+                  <div className="flex items-center gap-2">
+                    <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                    <span className="text-gray-500">- 105 Reviews</span>
+                  </div>
+                  <div className="text-gray-800 font-medium mt-2">
+                    Starting from{" "}
+                    <span className="text-red-600">${listing.ListPrice}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
-        <div className="flex justify-center items-center mt-8 mb-4">
-          <Button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="mr-2">
-            Previous
-          </Button>
-          <span className="text-sm mx-4">
-            Page {currentPage} of {totalPages}
-          </span>
-          <Button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className="ml-2">
-            Next
-          </Button>
-        </div>
+        {currentListings && currentListings.length > 0 && (
+          <div className="flex justify-center items-center mt-8 mb-4">
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="mr-2">
+              Previous
+            </Button>
+            <span className="text-sm mx-4">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="ml-2">
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
