@@ -16,15 +16,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 const facilitiesOptions = [
-  "Garage",
-  "Parking",
-  "Pool",
-  "Fitness",
-  "Lounge",
-  "Laundry",
+  { label: "Garage", field: "Garage" },
+  { label: "Pool", field: "PoolPrivate" },
+  { label: "Gated Community", field: "GatedCommunity" },
+  { label: "Fitness", field: "FitnessCenter" }, // Assuming it exists in the API
 ];
+
 const tagsOptions = ["5 Star Hotel", "4 Star Hotel", "3 Star Hotel", "Resort"];
 
 const fetchProperties = async () => {
@@ -35,14 +35,14 @@ const fetchProperties = async () => {
 };
 
 const AllListings = () => {
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const router = useRouter();
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const listingsPerPage = 12; // Number of listings per page
-  const searchParams = useSearchParams();
+  const listingsPerPage = 12;
 
-  // Extract location and propertyType from URL query parameters
+  const searchParams = useSearchParams();
   const location = searchParams.get("location") || "";
   const propertyType = searchParams.get("propertyType") || "";
 
@@ -55,6 +55,7 @@ const AllListings = () => {
     queryFn: fetchProperties,
   });
 
+  // Handle facility checkbox changes
   const handleFacilityChange = (facility: string) => {
     setSelectedFacilities((prev) =>
       prev.includes(facility)
@@ -63,13 +64,14 @@ const AllListings = () => {
     );
   };
 
+  // Handle tag checkbox changes
   const handleTagChange = (tag: string) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
-  // Filter listings based on URL params and selected filters
+  // Filter listings based on selected filters
   const filteredListings = listings?.filter((listing) => {
     const price = listing.ListPrice;
     const matchesPriceRange = price >= priceRange[0] && price <= priceRange[1];
@@ -84,10 +86,28 @@ const AllListings = () => {
         )
       : true;
 
-    return matchesPriceRange && matchesLocation && matchesPropertyType;
+    const matchesFacilities = selectedFacilities.every((facility) => {
+      const facilityField = facilitiesOptions.find(
+        (f) => f.label === facility
+      )?.field;
+      return listing[facilityField as keyof Listing] === "Y";
+    });
+
+    // Assume tags are part of PublicRemarks_en for simplicity
+    const matchesTags = selectedTags.every((tag) =>
+      listing.PublicRemarks_en?.toLowerCase().includes(tag.toLowerCase())
+    );
+
+    return (
+      matchesPriceRange &&
+      matchesLocation &&
+      matchesPropertyType &&
+      matchesFacilities &&
+      matchesTags
+    );
   });
 
-  // Calculate the listings to display based on the current page
+  // Calculate listings for the current page
   const indexOfLastListing = currentPage * listingsPerPage;
   const indexOfFirstListing = indexOfLastListing - listingsPerPage;
   const currentListings = filteredListings?.slice(
@@ -119,26 +139,65 @@ const AllListings = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col lg:flex-row gap-8 px-2 lg:px-8 py-12">
-        <div className="w-full lg:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className="border p-4 w-full rounded-lg shadow-md hover:shadow-lg transition-shadow animate-pulse">
-              <div className="bg-gray-300 h-48 rounded-t-lg"></div>
-              <div className="mt-4 space-y-2">
-                <div className="bg-gray-300 h-6 w-3/4 rounded"></div>
-                <div className="bg-gray-300 h-4 w-1/2 rounded"></div>
-                <div className="bg-gray-300 h-4 w-1/4 rounded mt-2"></div>
-              </div>
+      <div className="flex flex-col lg:flex-row gap-8 px-4 lg:px-8 2xl:px-24 py-12">
+        {/* Sidebar skeleton */}
+        <div className="w-full lg:w-1/6 2xl:w-1/4 space-y-8">
+          {/* Price Range skeleton */}
+          <div className="p-6 border rounded-lg shadow-sm">
+            <div className="h-6 w-32 bg-gray-200 rounded mb-4"></div>
+            <div className="h-4 w-full bg-gray-200 rounded mt-4"></div>
+            <div className="flex justify-between mt-2">
+              <div className="h-4 w-16 bg-gray-200 rounded"></div>
+              <div className="h-4 w-16 bg-gray-200 rounded"></div>
             </div>
-          ))}
+          </div>
+
+          {/* Facilities skeleton */}
+          <div className="p-6 border rounded-lg shadow-sm">
+            <div className="h-6 w-32 bg-gray-200 rounded mb-4"></div>
+            <div className="space-y-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-center space-x-2">
+                  <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tags skeleton */}
+          <div className="p-6 border rounded-lg shadow-sm">
+            <div className="h-6 w-32 bg-gray-200 rounded mb-4"></div>
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-4 w-20 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Main content skeleton */}
+        <div className="flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="border rounded-lg shadow-sm">
+                <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+                <div className="p-4">
+                  <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 w-1/3 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
-  if (isError) return <div>Error loading listings.</div>;
+  if (isError) {
+    return <div>Error loading listings.</div>;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 px-4 lg:px-8 2xl:px-24 py-12">
@@ -151,8 +210,8 @@ const AllListings = () => {
             value={priceRange}
             onValueChange={(value) => setPriceRange(value as [number, number])}
             min={0}
-            max={5000}
-            step={100}
+            max={500000}
+            step={10000}
             className="mt-4"
           />
           <div className="flex justify-between mt-2 text-sm">
@@ -166,14 +225,14 @@ const AllListings = () => {
           <h2 className="text-xl font-semibold mb-4">Facilities</h2>
           <div className="space-y-2">
             {facilitiesOptions.map((facility) => (
-              <div key={facility} className="flex items-center space-x-2">
+              <div key={facility.label} className="flex items-center space-x-2">
                 <Checkbox
-                  id={facility}
-                  checked={selectedFacilities.includes(facility)}
-                  onCheckedChange={() => handleFacilityChange(facility)}
+                  id={facility.label}
+                  checked={selectedFacilities.includes(facility.label)}
+                  onCheckedChange={() => handleFacilityChange(facility.label)}
                 />
-                <label htmlFor={facility} className="text-sm">
-                  {facility}
+                <label htmlFor={facility.label} className="text-sm">
+                  {facility.label}
                 </label>
               </div>
             ))}
@@ -198,10 +257,6 @@ const AllListings = () => {
             ))}
           </div>
         </div>
-
-        <Button className="w-full mt-6 bg-secondaryColor text-white">
-          Apply Filters
-        </Button>
       </div>
 
       {/* Property Listings */}
@@ -213,11 +268,21 @@ const AllListings = () => {
             {currentListings?.map((listing) => (
               <Card
                 key={listing.ListingId}
-                className="w-full md:w-[362px] min-h-[580px] flex flex-col justify-between items-start shadow-lg">
+                className="w-full md:w-[362px] min-h-[580px] cursor-pointer flex flex-col justify-between items-start shadow-lg">
                 <CardHeader className="p-0 h-full w-full">
-                  <PropertyCarousel images={listing.Images.split("|")} />
+                  <PropertyCarousel
+                    images={listing.Images.split("|")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/property/${listing.ListingTitle_en}`);
+                    }}
+                  />
                 </CardHeader>
-                <CardContent className="p-4">
+                <CardContent
+                  onClick={() =>
+                    router.push(`/property/${listing.ListingTitle_en}`)
+                  }
+                  className="p-4 cursor-pointer">
                   <CardTitle className="text-xl font-semibold">
                     {listing.ListingTitle_en}
                   </CardTitle>
@@ -241,7 +306,9 @@ const AllListings = () => {
         {currentListings && currentListings.length > 0 && (
           <div className="flex justify-center items-center mt-8 mb-4">
             <Button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              onClick={() => {
+                setCurrentPage((prev) => Math.max(prev - 1, 1));
+              }}
               disabled={currentPage === 1}
               className="mr-2">
               Previous
@@ -250,9 +317,9 @@ const AllListings = () => {
               Page {currentPage} of {totalPages}
             </span>
             <Button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
+              onClick={() => {
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+              }}
               disabled={currentPage === totalPages}
               className="ml-2">
               Next

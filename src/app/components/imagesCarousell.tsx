@@ -1,7 +1,15 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const PropertyCarousel = ({ images }: { images: string[] }) => {
+const PropertyCarousel = ({
+  images,
+  className,
+  onClick,
+}: {
+  images: string[];
+  className?: string;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
@@ -15,7 +23,9 @@ const PropertyCarousel = ({ images }: { images: string[] }) => {
   };
 
   return (
-    <div className="relative w-full h-[340px] overflow-hidden rounded-t-lg">
+    <div
+      onClick={onClick}
+      className={`relative w-full h-[340px] overflow-hidden rounded-t-lg ${className}`}>
       {/* Image */}
       <Image
         src={images[currentIndex]}
@@ -27,12 +37,18 @@ const PropertyCarousel = ({ images }: { images: string[] }) => {
 
       {/* Navigation Controls */}
       <button
-        onClick={handlePrev}
+        onClick={(e) => {
+          e.stopPropagation();
+          handlePrev();
+        }}
         className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70">
         ‹
       </button>
       <button
-        onClick={handleNext}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleNext();
+        }}
         className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70">
         ›
       </button>
