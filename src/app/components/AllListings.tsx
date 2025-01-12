@@ -22,7 +22,9 @@ const facilitiesOptions = [
   { label: "Garage", field: "Garage" },
   { label: "Pool", field: "PoolPrivate" },
   { label: "Gated Community", field: "GatedCommunity" },
-  { label: "Fitness", field: "FitnessCenter" }, // Assuming it exists in the API
+  { label: "Fitness", field: "FitnessCenter" },
+  { label: "Lounge", field: "Lounge" },
+  { label: "Laundry", field: "Laundry" },
 ];
 
 const tagsOptions = ["5 Star Hotel", "4 Star Hotel", "3 Star Hotel", "Resort"];
@@ -90,20 +92,23 @@ const AllListings = () => {
       const facilityField = facilitiesOptions.find(
         (f) => f.label === facility
       )?.field;
-      return listing[facilityField as keyof Listing] === "Y";
+      return (
+        listing[facilityField as keyof Listing] === "Y" ||
+        listing.PublicRemarks_en?.includes(facility)
+      );
     });
 
     // Assume tags are part of PublicRemarks_en for simplicity
-    const matchesTags = selectedTags.every((tag) =>
-      listing.PublicRemarks_en?.toLowerCase().includes(tag.toLowerCase())
-    );
+    // const matchesTags = selectedTags.every((tag) =>
+    //   listing.PublicRemarks_en?.toLowerCase().includes(tag.toLowerCase())
+    // );
 
     return (
       matchesPriceRange &&
       matchesLocation &&
       matchesPropertyType &&
-      matchesFacilities &&
-      matchesTags
+      matchesFacilities
+      // matchesTags
     );
   });
 
