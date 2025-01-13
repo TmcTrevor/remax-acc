@@ -294,10 +294,7 @@ const AllListings = () => {
                   <CardDescription className="text-gray-500 text-sm">
                     {listing.Location}
                   </CardDescription>
-                  <div className="flex items-center gap-2">
-                    <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                    <span className="text-gray-500">- 105 Reviews</span>
-                  </div>
+
                   <div className="text-gray-800 font-medium mt-2">
                     Starting from{" "}
                     <span className="text-red-600">${listing.ListPrice}</span>
