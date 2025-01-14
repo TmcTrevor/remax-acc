@@ -125,7 +125,7 @@ const VideoFeed = () => {
       {/* YouTube Channel Button */}
       <div className="flex justify-center mt-12">
         <a
-          href="https://www.youtube.com/@YourChannel"
+          href="https://www.youtube.com/@WillMitchellBelize"
           target="_blank"
           rel="noopener noreferrer"
           className="px-6 py-3 bg-red-600 text-white text-lg font-bold rounded-lg shadow-lg hover:bg-red-700">
