@@ -36,7 +36,7 @@ const AgentList: React.FC = () => {
   });
 
   useEffect(() => {
-    const pageParam = searchParams.get("page");
+    const pageParam = searchParams?.get("page");
     if (pageParam) {
       setCurrentPage(Number(pageParam));
     }

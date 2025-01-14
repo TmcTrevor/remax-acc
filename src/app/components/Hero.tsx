@@ -35,19 +35,19 @@ export default function Hero() {
 
       {/* Content */}
       <div className="container mx-auto relative z-10 flex flex-col items-center justify-center h-full text-center text-white">
-        <h1 className="text-5xl font-bold mb-4">FIND YOUR BELIZE PROPERTY</h1>
+        <h1 className="text-5xl font-bold mb-4">Belize Real Estate </h1>
         <p className="text-lg mb-8 tracking-wide font-semibold">
-          REMAX BELIZE MLS
+          Search Property in Belize
         </p>
 
         {/* Search Form */}
         <div className="flex flex-col px-8 lg:px-0 rounded-0 lg:flex-row justify-center items-center w-full max-w-6xl">
-          <div className="bg-white rounded-l-lg shadow-lg max-w-6xl w-full lg:w-3/4">
-            <div className="flex flex-col w-full justify-between p-4 items-center xl:flex-row gap-4 ">
+          <div className="bg-white rounded-l-lg shadow-lg max-w-6xl w-full lg:w-2/4">
+            <div className="flex flex-col w-full justify-between items-center xl:flex-row gap-4 ">
               {/* Location Select */}
-              <div className="relative min-h-[100px] md:min-h-[120px] w-full md:w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center md:border-r border-gray-300 items-start group">
+              <div className="relative  w-full md:w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center md:border-r border-gray-300 items-start group">
                 <label
-                  className={`absolute text-3xl font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
+                  className={`absolute text-md font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
                     ${
                       location
                         ? "top-0 translate-y-0 scale-75 text-blue-500"
@@ -112,9 +112,9 @@ export default function Hero() {
                 </Select>
               </div>
               {/* Property Type Select */}
-              <div className="relative min-h-[100px] md:min-h-[120px] w-full md:w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center md:border-r border-gray-300 items-start group">
+              <div className="relative  w-full md:w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center md:border-r border-gray-300 items-start group">
                 <label
-                  className={`absolute text-3xl font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
+                  className={`absolute text-md font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
                     ${
                       propertyType
                         ? "top-0 translate-y-0 scale-75 text-blue-500"
@@ -155,9 +155,9 @@ export default function Hero() {
               </div>
 
               {/* Price Range Select */}
-              <div className="relative  min-h-[100px] md:min-h-[120px] w-full md:w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center  items-start group">
+              <div className="relative   w-full md:w-1/3 p-4 flex flex-col hover:bg-gray-100 justify-center  items-start group">
                 <label
-                  className={`absolute text-3xl font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
+                  className={`absolute text-md font-medium text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
                     ${
                       priceRange
                         ? "top-0 translate-y-0 scale-75 text-blue-500"
@@ -213,11 +213,13 @@ export default function Hero() {
               {/* Property Type Select */}
             </div>
           </div>
-          <Button
-            onClick={handleSearch}
-            className="bg-secondaryColor w-full lg:w-1/4 h-full text-4xl text-white  rounded-[0px] lg:rounded-r-lg hover:bg-mainColor mt-4 lg:mt-0">
-            Search
-          </Button>
+          <div className="flex justify-center p-2 h-full bg-white w-full lg:w-1/6 items-center rounded-[0px] ">
+            <Button
+              onClick={handleSearch}
+              className="bg-secondaryColor h-full w-full text-xl text-white  rounded-[0px] hover:bg-mainColor mt-4 lg:mt-0">
+              Search
+            </Button>
+          </div>
         </div>
       </div>
     </section>

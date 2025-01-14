@@ -62,10 +62,13 @@ const HotelListing = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center pt-[80px] md:pt-[200px] pb-[40px] md:pb-[80px] w-full">
-        <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold">
-          Belize MLS Listings
+        <h1 className="text-2xl md:text-4xl lg:text-6xl text-mainColor font-bold">
+          Explore Belize
         </h1>
-        <img
+        <h1 className="text-3xl md:text-6xl mt-4 lg:text-8xl text-secondaryColor font-bold">
+          Featured Listings
+        </h1>
+        {/* <img
           decoding="async"
           width="215"
           height="32"
@@ -74,7 +77,7 @@ const HotelListing = () => {
           className="attachment-large size-large wp-image-332 lazy loaded"
           alt=""
           data-was-processed="true"
-        />
+        /> */}
       </div>
 
       <div className="hotel-listing grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -100,10 +103,10 @@ const HotelListing = () => {
               <CardDescription className="text-gray-600 mb-2">
                 {listing.Location}
               </CardDescription>
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <span className="text-yellow-500">⭐⭐⭐⭐⭐</span>
                 <span className="text-gray-500">- 105 Reviews</span>
-              </div>
+              </div> */}
               <div className="text-gray-800 font-medium mt-2">
                 <span className="text-red-600 font-bold">
                   ${listing.ListPrice}

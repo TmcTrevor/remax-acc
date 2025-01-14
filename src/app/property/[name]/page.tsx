@@ -6,38 +6,35 @@ import PropertyDetails from "@/app/components/PropertyDetails"; // Import the Pr
 import axios from "axios";
 import { Listing } from "@/app/types/properties";
 
-const fetchProperties = async () => {
-  const response = await axios.get(
-    "https://api.remax-cca.com/api/Properties/F24351D8-A865-4C79-A6E8-9921718CD84E"
-  );
-  return response.data;
-};
-
 const PropertyPage = () => {
-  const { name } = useParams(); // Get the property name from the URL
-  const [property, setProperty] = useState(null);
+  const params = useParams<{ name: string }>(); // Get params object
+  const name = params?.name; // Get the property name from the URL
+  // const searchParams = useSearchParams();
+  // const name = searchParams?.get("name");
+  const [property, setProperty] = useState<Listing | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const loadProperty = async () => {
       try {
-        const data = await fetchProperties();
-        const decodedName = decodeURIComponent(name as string).replace(
-          /-/g,
-          " "
-        );
-        const matchedProperty = data.find(
-          (p: Listing) =>
-            p.ListingTitle_en.toLowerCase() === decodedName.toLowerCase()
-        );
+        console.log("Fetching property with name:", name);
+        const decodedName = decodeURIComponent(name as string);
+
+        const response = await axios.get(`/api/properties`, {
+          params: {
+            name: decodedName,
+          },
+        });
+
+        const matchedProperty = response.data?.data[0]; // Assuming the backend returns an array
         if (matchedProperty) {
           setProperty(matchedProperty);
         } else {
           setIsError(true);
         }
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        console.error("Error fetching property details:", error);
         setIsError(true);
       } finally {
         setIsLoading(false);

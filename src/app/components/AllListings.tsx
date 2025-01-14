@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Listing } from "../types/properties";
+import { Listing, PropertiesResponse } from "../types/properties";
 import PropertyCarousel from "./imagesCarousell";
 import {
   Card,
@@ -17,7 +17,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
+// Available filters
 const facilitiesOptions = [
   { label: "Garage", field: "Garage" },
   { label: "Pool", field: "PoolPrivate" },
@@ -27,34 +29,112 @@ const facilitiesOptions = [
   { label: "Laundry", field: "Laundry" },
 ];
 
-const tagsOptions = ["5 Star Hotel", "4 Star Hotel", "3 Star Hotel", "Resort"];
+// const propertyTypeOptions = ["Homes", "Condos", "Commercial", "Land"];
+const propertyTypeOptions = [
+  { label: "Homes", value: "House/Villa" },
+  { label: "Condos", value: "Condo" },
+  { label: "Commercial", value: "Commercial" },
+  { label: "Land", value: "Land" },
+];
+const locationOptions = [
+  "Ambergris Caye",
+  "Belize City",
+  "Belmopan",
+  "Caye Caulker",
+  "Corozal",
+  "Hopkins",
+  "Placencia",
+  "San Ignacio",
+  "San Pedro",
+];
 
-const fetchProperties = async () => {
-  const response = await axios.get<Listing[]>(
-    "https://api.remax-cca.com/api/Properties/F24351D8-A865-4C79-A6E8-9921718CD84E"
-  );
+// Fetch properties from backend API with filters and pagination
+const fetchProperties = async ({
+  page,
+  perPage,
+  minPrice,
+  maxPrice,
+  facilities,
+  propertyType,
+  location,
+  sortBy,
+}: {
+  page: number;
+  perPage: number;
+  minPrice: number;
+  maxPrice: number;
+  facilities: string[];
+  propertyType: string;
+  location: string;
+  sortBy: string;
+}) => {
+  const response = await axios.get<PropertiesResponse>("/api/properties", {
+    params: {
+      page,
+      perPage,
+      minPrice,
+      maxPrice,
+      facilities: facilities.join(","),
+      propertyType,
+      location,
+      sortBy,
+    },
+  });
   return response.data;
 };
 
 const AllListings = () => {
   const router = useRouter();
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
+  const searchParams = useSearchParams();
+
+  // Extract query parameters
+  const defaultLocation = searchParams?.get("location") || "";
+  const defaultPropertyType = searchParams?.get("propertyType") || "";
+
+  // Parse priceRange from the query parameter
+  const priceRangeParam = searchParams?.get("priceRange") || "0-500000";
+  const [defaultMinPrice, defaultMaxPrice] = priceRangeParam
+    .split("-")
+    .map(Number);
+
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    defaultMinPrice,
+    defaultMaxPrice,
+  ]);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedPropertyType, setSelectedPropertyType] =
+    useState<string>(defaultPropertyType);
+  const [selectedLocation, setSelectedLocation] =
+    useState<string>(defaultLocation);
+  const [sortBy, setSortBy] = useState<string>("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const listingsPerPage = 12;
-
-  const searchParams = useSearchParams();
-  const location = searchParams.get("location") || "";
-  const propertyType = searchParams.get("propertyType") || "";
 
   const {
     data: listings,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["properties"],
-    queryFn: fetchProperties,
+    queryKey: [
+      "properties",
+      currentPage,
+      priceRange,
+      selectedFacilities,
+      selectedPropertyType,
+      selectedLocation,
+      sortBy,
+    ],
+    queryFn: () =>
+      fetchProperties({
+        page: currentPage,
+        perPage: listingsPerPage,
+        minPrice: priceRange[0],
+        maxPrice: priceRange[1],
+        facilities: selectedFacilities,
+        propertyType: selectedPropertyType,
+        location: selectedLocation,
+        sortBy,
+      }),
   });
 
   // Handle facility checkbox changes
@@ -66,142 +146,10 @@ const AllListings = () => {
     );
   };
 
-  // Handle tag checkbox changes
-  const handleTagChange = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
-
-  // Filter listings based on selected filters
-  const filteredListings = listings?.filter((listing) => {
-    const price = listing.ListPrice;
-    const matchesPriceRange = price >= priceRange[0] && price <= priceRange[1];
-
-    const matchesLocation = location
-      ? listing.Location.toLowerCase().includes(location.toLowerCase())
-      : true;
-
-    const matchesPropertyType = propertyType
-      ? listing.PropertyTypeName_en.toLowerCase().includes(
-          propertyType.toLowerCase()
-        )
-      : true;
-
-    const matchesFacilities = selectedFacilities.every((facility) => {
-      const facilityField = facilitiesOptions.find(
-        (f) => f.label === facility
-      )?.field;
-      return (
-        listing[facilityField as keyof Listing] === "Y" ||
-        listing.PublicRemarks_en?.includes(facility)
-      );
-    });
-
-    // Assume tags are part of PublicRemarks_en for simplicity
-    // const matchesTags = selectedTags.every((tag) =>
-    //   listing.PublicRemarks_en?.toLowerCase().includes(tag.toLowerCase())
-    // );
-
-    return (
-      matchesPriceRange &&
-      matchesLocation &&
-      matchesPropertyType &&
-      matchesFacilities
-      // matchesTags
-    );
-  });
-
-  // Calculate listings for the current page
-  const indexOfLastListing = currentPage * listingsPerPage;
-  const indexOfFirstListing = indexOfLastListing - listingsPerPage;
-  const currentListings = filteredListings?.slice(
-    indexOfFirstListing,
-    indexOfLastListing
-  );
-
-  const totalPages = Math.ceil(
-    (filteredListings?.length || 0) / listingsPerPage
-  );
-
-  useEffect(() => {
-    const initialPriceRange = searchParams.get("priceRange");
-    if (initialPriceRange) {
-      const [min, max] = initialPriceRange.split("-").map(Number);
-      setPriceRange([min, max]);
-    }
-
-    const initialFacilities = searchParams.get("facilities");
-    if (initialFacilities) {
-      setSelectedFacilities(initialFacilities.split(","));
-    }
-
-    const initialTags = searchParams.get("tags");
-    if (initialTags) {
-      setSelectedTags(initialTags.split(","));
-    }
-  }, [searchParams]);
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col lg:flex-row gap-8 px-4 lg:px-8 2xl:px-24 py-12">
-        {/* Sidebar skeleton */}
-        <div className="w-full lg:w-1/6 2xl:w-1/4 space-y-8">
-          {/* Price Range skeleton */}
-          <div className="p-6 border rounded-lg shadow-sm">
-            <div className="h-6 w-32 bg-gray-200 rounded mb-4"></div>
-            <div className="h-4 w-full bg-gray-200 rounded mt-4"></div>
-            <div className="flex justify-between mt-2">
-              <div className="h-4 w-16 bg-gray-200 rounded"></div>
-              <div className="h-4 w-16 bg-gray-200 rounded"></div>
-            </div>
-          </div>
-
-          {/* Facilities skeleton */}
-          <div className="p-6 border rounded-lg shadow-sm">
-            <div className="h-6 w-32 bg-gray-200 rounded mb-4"></div>
-            <div className="space-y-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center space-x-2">
-                  <div className="h-4 w-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tags skeleton */}
-          <div className="p-6 border rounded-lg shadow-sm">
-            <div className="h-6 w-32 bg-gray-200 rounded mb-4"></div>
-            <div className="space-y-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-4 w-20 bg-gray-200 rounded"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Main content skeleton */}
-        <div className="flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="border rounded-lg shadow-sm">
-                <div className="h-48 bg-gray-200 rounded-t-lg"></div>
-                <div className="p-4">
-                  <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 w-1/2 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 w-1/3 bg-gray-200 rounded"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const totalPages = listings?.totalPages || 1;
 
   if (isError) {
-    return <div>Error loading listings.</div>;
+    return <div>Error loading listings. Please try again later.</div>;
   }
 
   return (
@@ -233,8 +181,8 @@ const AllListings = () => {
               <div key={facility.label} className="flex items-center space-x-2">
                 <Checkbox
                   id={facility.label}
-                  checked={selectedFacilities.includes(facility.label)}
-                  onCheckedChange={() => handleFacilityChange(facility.label)}
+                  checked={selectedFacilities.includes(facility.field)}
+                  onCheckedChange={() => handleFacilityChange(facility.field)}
                 />
                 <label htmlFor={facility.label} className="text-sm">
                   {facility.label}
@@ -244,44 +192,70 @@ const AllListings = () => {
           </div>
         </div>
 
-        {/* Tags Filter */}
+        {/* Property Type Filter */}
         <div className="p-6 border rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Tags</h2>
-          <div className="space-y-2">
-            {tagsOptions.map((tag) => (
-              <div key={tag} className="flex items-center space-x-2">
-                <Checkbox
-                  id={tag}
-                  checked={selectedTags.includes(tag)}
-                  onCheckedChange={() => handleTagChange(tag)}
-                />
-                <label htmlFor={tag} className="text-sm">
-                  {tag}
-                </label>
-              </div>
+          <h2 className="text-xl font-semibold mb-4">Property Type</h2>
+          <select
+            value={selectedPropertyType}
+            onChange={(e) => setSelectedPropertyType(e.target.value)}
+            className="w-full p-2 border rounded">
+            <option value="">All Types</option>
+            {propertyTypeOptions.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
             ))}
-          </div>
+          </select>
+        </div>
+
+        {/* Location Filter */}
+        <div className="p-6 border rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Location</h2>
+          <select
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
+            className="w-full p-2 border rounded">
+            <option value="">All Locations</option>
+            {locationOptions.map((loc) => (
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Sorting */}
+        <div className="p-6 border rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Sort By</h2>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full p-2 border rounded">
+            <option value="newest">Newest</option>
+            <option value="priceLowToHigh">Price: Low to High</option>
+            <option value="priceHighToLow">Price: High to Low</option>
+          </select>
         </div>
       </div>
 
       {/* Property Listings */}
       <div className="flex flex-col w-full lg:w-5/6 2xl:w-3/4">
-        {currentListings?.length === 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {Array.from({ length: listingsPerPage }).map((_, index) => (
+              <Skeleton key={index} className="h-80 w-full" />
+            ))}
+          </div>
+        ) : listings?.data?.length === 0 ? (
           <div className="text-center text-gray-500">No properties found.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {currentListings?.map((listing) => (
+            {listings?.data?.map((listing: Listing) => (
               <Card
                 key={listing.ListingId}
-                className="w-full md:w-[362px] min-h-[580px] cursor-pointer flex flex-col justify-between items-start shadow-lg">
+                className="w-full md:w-[362px] xl:w-[330px] 3xl:w-[362px] min-h-[580px] cursor-pointer flex flex-col justify-between items-start shadow-lg">
                 <CardHeader className="p-0 h-full w-full">
-                  <PropertyCarousel
-                    images={listing.Images.split("|")}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      router.push(`/property/${listing.ListingTitle_en}`);
-                    }}
-                  />
+                  <PropertyCarousel images={listing.Images.split("|")} />
                 </CardHeader>
                 <CardContent
                   onClick={() =>
@@ -294,7 +268,6 @@ const AllListings = () => {
                   <CardDescription className="text-gray-500 text-sm">
                     {listing.Location}
                   </CardDescription>
-
                   <div className="text-gray-800 font-medium mt-2">
                     Starting from{" "}
                     <span className="text-red-600">${listing.ListPrice}</span>
@@ -305,7 +278,8 @@ const AllListings = () => {
           </div>
         )}
 
-        {currentListings && currentListings.length > 0 && (
+        {/* Pagination */}
+        {!isLoading && listings && listings?.data?.length > 0 && (
           <div className="flex justify-center items-center mt-8 mb-4">
             <Button
               onClick={() => {

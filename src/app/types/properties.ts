@@ -59,3 +59,9 @@ export type Listing = {
   Viewyn: string;
   publicRemarks_es: string;
 };
+
+export type PropertiesResponse = {
+  data: Listing[];
+  totalPages: number;
+  currentPage: number;
+};

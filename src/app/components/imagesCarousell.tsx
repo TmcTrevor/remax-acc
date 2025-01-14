@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const PropertyCarousel = ({
@@ -11,6 +13,19 @@ const PropertyCarousel = ({
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Preload next and previous images
+  useEffect(() => {
+    const preloadImage = (index: number) => {
+      if (images[index]) {
+        const img = new window.Image();
+        img.src = images[index];
+      }
+    };
+
+    preloadImage((currentIndex + 1) % images.length); // Preload next image
+    preloadImage(currentIndex === 0 ? images.length - 1 : currentIndex - 1); // Preload previous image
+  }, [currentIndex, images]);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -32,6 +47,7 @@ const PropertyCarousel = ({
         alt={`Property Image ${currentIndex + 1}`}
         layout="fill"
         objectFit="cover"
+        priority // Ensures that the first image is eagerly loaded
         className="rounded-t-lg shadow-2xl"
       />
 

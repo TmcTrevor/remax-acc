@@ -1,10 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import { Listing } from "../types/properties";
 import PropertyCarousel from "./imagesCarousell";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // Import icons
+
+const decodeHtmlEntities = (text: string) => {
+  const element = document.createElement("div");
+  element.innerHTML = text;
+  return element.innerText;
+};
 
 const PropertyDetails = ({ property }: { property: Listing }) => {
+  const [isExpanded, setIsExpanded] = useState(false); // Track toggle state
   //   const [imageLoading, setImageLoading] = useState(true); // Track image loading
+  const toggleReadMore = () => {
+    setIsExpanded(!isExpanded);
+  };
 
+  const truncateText = (text: string, length: number) => {
+    if (text.length <= length) return text;
+    return text.slice(0, length) + "...";
+  };
+  const basicAmenities = [
+    property.BedroomsTotal && !isNaN(property.BedroomsTotal)
+      ? { label: `${property.BedroomsTotal} Bedrooms`, value: true }
+      : null,
+    property.BathroomsFull && !isNaN(property.BathroomsFull)
+      ? { label: `${property.BathroomsFull} Bathrooms`, value: true }
+      : null,
+    property.PoolPrivate === "Y"
+      ? { label: "Private Pool", value: true }
+      : null,
+    property.Garage === "Y" ? { label: "Garage", value: true } : null,
+    property.GatedCommunity === "Y"
+      ? { label: "Gated Community", value: true }
+      : null,
+    property.Cooling === "Y" ? { label: "Cooling System", value: true } : null,
+    property.Furnishedyn === "Y" ? { label: "Furnished", value: true } : null,
+    property.MaidRoom === "Y" ? { label: "Maid Room", value: true } : null,
+    property.Viewyn === "Y" ? { label: "Scenic View", value: true } : null,
+    property.GarageSpaces > 0
+      ? { label: `${property.GarageSpaces} Garage Spaces`, value: true }
+      : null,
+    property.LotSizeArea && property.LotSizeUnits && property.LotSizeArea !== 0
+      ? {
+          label: `Lot Size: ${property.LotSizeArea} ${property.LotSizeUnits}`,
+          value: true,
+        }
+      : null,
+  ].filter(Boolean);
+  const decodedDescription = decodeHtmlEntities(property.PublicRemarks_en);
   return (
     <div className="w-full max-w-6xl mx-auto px-6 lg:px-12 py-12">
       {/* Header Section */}
@@ -23,7 +67,6 @@ const PropertyDetails = ({ property }: { property: Listing }) => {
             <p className="text-gray-500 text-lg">
               {property.Location}, {property.Country}{" "}
               <span className="mx-2">|</span>
-              ⭐⭐⭐⭐⭐ - 105 Reviews <span className="mx-2">|</span>
               {property.FirstName} {property.LastName}
             </p>
           </div>
@@ -53,35 +96,45 @@ const PropertyDetails = ({ property }: { property: Listing }) => {
       <div className="mb-12 max-w-3xl mx-auto">
         <h2 className="text-2xl font-semibold mb-4">Overview</h2>
         <p className="text-gray-600 text-lg leading-relaxed">
-          {property.PublicRemarks_en}
+          {isExpanded
+            ? decodedDescription // Show full text when expanded
+            : truncateText(decodedDescription, 400)}{" "}
+          {/* Limit to 300 chars */}
         </p>
+        {decodedDescription.length > 400 && (
+          <button
+            onClick={toggleReadMore}
+            className="text-blue-600 font-semibold mt-2 hover:underline focus:outline-none">
+            {isExpanded ? "Read Less" : "Read More"}
+          </button>
+        )}
       </div>
 
       {/* Basic Amenities Section */}
-      <div className="mb-12 max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Basic Amenities</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            property.PoolPrivate === "Y" && "Private Pool",
-            property.Garage === "Y" && "Garage",
-            property.GatedCommunity === "Y" && "Gated Community",
-            property.Cooling === "Y" && "Cooling System",
-            property.Furnishedyn === "Y" && "Furnished",
-            property.MaidRoom === "Y" && "Maid Room",
-            property.Viewyn === "Y" && "Scenic View",
-            property.GarageSpaces > 0 &&
-              `${property.GarageSpaces} Garage Spaces`,
-            property.LotSizeArea !== 0 &&
-              `${property.LotSizeArea} ${property.LotSizeUnits} Lot Size`,
-          ]
-            .filter(Boolean) // Remove any false or null values
-            .map((amenity, index) => (
-              <span key={index} className="text-gray-700 font-medium text-lg">
-                {amenity}
-              </span>
-            ))}
+      {basicAmenities.length > 0 && (
+        <div className="mb-12 max-w-3xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-4">Basic Amenities</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {
+              // Remove any null values
+              basicAmenities.map((amenity, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-4 border-b border-gray-200 pb-2">
+                  {amenity?.value ? (
+                    <FaCheckCircle className="text-green-500 text-xl" />
+                  ) : (
+                    <FaTimesCircle className="text-red-500 text-xl" />
+                  )}
+                  <span className="text-gray-700 font-medium text-lg">
+                    {amenity?.label}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Policies Section */}
       {/* Policies Section */}
