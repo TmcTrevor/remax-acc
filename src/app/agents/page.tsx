@@ -98,11 +98,11 @@ const AgentList: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="grid grid-cols-1 md:grid-cols-2  mt-10 lg:p-24 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2  mt-10 lg:p-12 xl:p-24 2xl:p-24 3xl:p-24 lg:grid-cols-3 gap-6">
         {currentAgents.map((agent: Agent) => (
           <Card
             key={agent.AssociateID}
-            className="w-[362px] min-h-[580px] flex flex-col justify-between items-start shadow-lg">
+            className="w-[362px] lg:w-[330px] 3xl:w-[362px] min-h-[580px] flex flex-col justify-between items-start shadow-lg">
             <CardHeader className="p-0 h-full w-full">
               <div className="relative w-full h-[340px]">
                 <img
