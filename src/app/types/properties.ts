@@ -30,7 +30,7 @@ export type Listing = {
   ListPrice: number;
   ListingContractDate: string;
   ListingContractType: number;
-  ListingId: number;
+  ListingId: string;
   ListingKey: string;
   ListingProbableuseId: number;
   ListingTitle_en: string;

@@ -20,6 +20,7 @@ const PropertyPage = () => {
       try {
         console.log("Fetching property with name:", name);
         const decodedName = decodeURIComponent(name as string);
+        // console.log("Fetching property after decoding with name:", decodedName);
 
         const response = await axios.get(`/api/properties`, {
           params: {

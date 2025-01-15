@@ -88,14 +88,13 @@ export default async function handler(
   try {
     const listings = await fetchAndParseProperties();
 
-    console.log("heyyyy");
     // Extract query parameters
     const {
       page = "1",
       name = "",
       perPage = "12",
       minPrice = "0",
-      maxPrice = "500000",
+      maxPrice = "1000000000",
       facilities = "",
       propertyType = "",
       location = "",
@@ -109,7 +108,6 @@ export default async function handler(
     const parsedPerPage = parseInt(perPage as string, 10);
 
     // Apply filters
-    console.log("listing", facilitiesArray);
     const filteredListings = listings.filter((listing) => {
       const matchingTitle = listing.ListingTitle_en.toLowerCase().includes(
         (name as string).toLowerCase()

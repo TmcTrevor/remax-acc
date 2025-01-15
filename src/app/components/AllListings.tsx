@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 
 // Available filters
 const facilitiesOptions = [
@@ -92,7 +93,7 @@ const AllListings = () => {
   const defaultPropertyType = searchParams?.get("propertyType") || "";
 
   // Parse priceRange from the query parameter
-  const priceRangeParam = searchParams?.get("priceRange") || "0-500000";
+  const priceRangeParam = searchParams?.get("priceRange") || "0-14000000";
   const [defaultMinPrice, defaultMaxPrice] = priceRangeParam
     .split("-")
     .map(Number);
@@ -157,13 +158,73 @@ const AllListings = () => {
       {/* Sidebar - Filters */}
       <div className="w-full lg:w-1/6 2xl:w-1/4 space-y-8">
         {/* Price Range Filter */}
+        {/* Price Range Filter */}
         <div className="p-6 border rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Price Range</h2>
-          <Slider
+          <div className="flex gap-4 items-center">
+            {/* Min Price Input */}
+            <div className="flex flex-col w-1/2">
+              <label
+                htmlFor="min-price"
+                className="text-sm font-medium text-gray-700">
+                Min Price
+              </label>
+              <input
+                id="min-price"
+                type="number"
+                min={0}
+                max={priceRange[1] - 10000}
+                value={priceRange[0]}
+                onChange={(e) => {
+                  const newMin = Math.min(
+                    Number(e.target.value),
+                    priceRange[1] - 1
+                  );
+                  setPriceRange([newMin, priceRange[1]]);
+                }}
+                className="p-2 border rounded text-sm"
+              />
+            </div>
+
+            {/* Max Price Input */}
+            <div className="flex flex-col w-1/2">
+              <label
+                htmlFor="max-price"
+                className="text-sm font-medium text-gray-700">
+                Max Price
+              </label>
+              <input
+                id="max-price"
+                type="number"
+                min={priceRange[0] + 10000}
+                max={500000}
+                value={priceRange[1]}
+                onChange={(e) => {
+                  const newMax = Math.max(
+                    Number(e.target.value),
+                    priceRange[0] + 1
+                  );
+                  setPriceRange([priceRange[0], newMax]);
+                }}
+                className="p-2 border rounded text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Slider for visual adjustment */}
+          {/* <Slider
             value={priceRange}
             onValueChange={(value) => setPriceRange(value as [number, number])}
             min={0}
-            max={500000}
+            max={100000000}
+            step={10000}
+            className="mt-4"
+          /> */}
+          <DualRangeSlider
+            value={priceRange}
+            onValueChange={(value) => setPriceRange(value as [number, number])}
+            min={0}
+            max={14000000}
             step={10000}
             className="mt-4"
           />
